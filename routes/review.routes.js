@@ -25,3 +25,5 @@ const Review = require("../models/Review.model");
 //         res.status(500).send('Error processing request');
 //       });
 //   });
+
+module.exports = router;
