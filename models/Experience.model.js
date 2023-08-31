@@ -4,13 +4,15 @@ const { Schema, model } = require("mongoose");
 const experienceSchema = new Schema({
   title: { type: String, required: true },
   location: { type: String, required: true },
-  experienceType: {["Xtreme", "Cultural", "Gastronomic"]},
+  experienceType: {enum:["Xtreme", "Cultural", "Gastronomic"]},
   description: { type: String, required: true },
   duration: { type: String, required: true },
   price: { type: Number, required: true },
   imageUrl: { type: String, required: true },
   tags: [{ type: String }],
   ratings: { type: Schema.Types.ObjectId, ref: 'Review'},
+  reviews: [{ type: Schema.Types.ObjectId, ref: 'Review'}],
+
   },
   {
     timestamps: true

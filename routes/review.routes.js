@@ -25,3 +25,58 @@ const Review = require("../models/Review.model");
 //         res.status(500).send('Error processing request');
 //       });
 //   });
+
+
+router.get('/reviews/:expererience_Id', (req, res, next) => {
+    const {expererience_Id} = req.params
+    Review.find({experience: expererience_Id })
+        .then(allReviews => res.json(allReviews))
+        .catch(err => res.json(err));
+});
+
+// Create comment
+
+// router.post('/reviews/:expererience_Id', (req, res, next) => {
+//     const { comment, userId } = req.body
+//     const {expererience_Id} = req.params
+
+//     Review.create({
+//         comment,
+//         author,
+//     })
+//     .then(
+//     Experience.findByIdAndUpdate(expererience_Id,$push:{Review:data._id}))
+
+
+// })
+    
+
+//Delete comment
+router.post('/country/:location/:experience_id', (req, res, next) => {
+
+    const experience_id = req.params;
+    Review.findByIdAndDelete(experience_id)
+        .then(() => {
+            Review.find()
+                .then(allReviews => res.json(allReviews))
+        })
+        .catch(err => console.log('This error has been triggered', err))
+});
+
+//Modify comment
+router.post('/country/:location/:experience_id', (req, res, next) => {
+    const { comment, experience_id } = req.body
+
+    Review.findByIdAndUpdate(experience_id, {
+        comment: comment,
+    })
+        .then(() => {
+            Review.find()
+                .then(allReviews => res.json(allReviews))
+        })
+
+        .catch(err => console.log('This error has been triggered', err))
+});
+
+
+module.exports = router;
