@@ -2,12 +2,35 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const User = require("../models.User.model");
-const {isAuthenticated} = require("../middleware/jwt.middleware")
+const User = require("./../models/User.model");
+const { /* isAuthenticated */ } = require("../middleware/jwt.middleware");
 
-router.get("/profile/edit", (req, res, next) => {
+// EDIT USER
+router.post("/profile/edit/:userId", /* isAuthenticated */ (req, res) => {
+  const userId = req.params.userId;
+  const { email, password, name } = req.body;
+  User.findByIdAndUpdate(userId, { email, password, name })
+    .then((modifiedUser) => {
+      res.json(modifiedUser);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.send(error, "Error updating data");
+    });
+});
 
-    res.json("All good in here");
-  });
-  
-  module.exports = router;
+// DELETE USER
+router.post("/profile/delete/:userId", /* isAuthenticated */ (req, res) => {
+  const userId = req.params.userId;
+  const { email, password, name } = req.body;
+  User.findByIdAndRemove(userId, { email, password, name })
+  .then((deletedUser) => {
+    res.json(deletedUser);
+  })
+    .catch((error) => {
+      console.error(error);
+      res.send(error, "Error deleting data");
+    });
+});
+
+module.exports = router;
