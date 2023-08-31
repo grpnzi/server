@@ -7,7 +7,7 @@ const reviewSchema = new Schema(
       required: [true, "comment is required."],
     },
     author: { type: Schema.Types.ObjectId, ref: 'User' },
-    likes: [{ type: Schema.Types.ObjectId, ref: 'User' }]  // ponemos brackets ya que es una lista
+    likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // ponemos brackets ya que es una lista
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
