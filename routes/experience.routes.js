@@ -6,8 +6,13 @@ const Experience = require("../models/Experience.model");
 
 
   router.get('/country/:location/experience', (req, res, next) => {
-    Experience.find()
-      .then(allExperiences => res.json(allExperiences))
+
+    const {location} = req.params
+
+    Experience.find({location: location}).populate("reviews")
+      .then((allExperiences) => { 
+        console.log(allExperiences);
+        res.json(allExperiences)})
       .catch(err => res.json(err));
   });
 
