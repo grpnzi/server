@@ -62,20 +62,16 @@ router.post('/reviews/:expererience_Id', (req, res, next) => {
         author: userId,
     })
         .then((newReview) => {
-            Experience.findByIdAndUpdate(
+            return Experience.findByIdAndUpdate(
                 expererience_Id,
                 { $addToSet: { reviews: newReview._id } }, // addToSet es lo mismo que un push pero limitado a 1 iteracion.
                 { new: true } // This option returns the updated experience document
             )
-                .then((updatedExperience) => {
-                    res.json(updatedExperience);
-                })
-                .catch((error) => {
-                    console.error(error);
-                    res.status(500).json({ error: 'Error updating experience with new review.' });
-                });
-
         })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: 'Error updating experience with new review.' });
+        });
 })
 
 
