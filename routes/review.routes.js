@@ -28,11 +28,27 @@ const Experience = require("../models/Experience.model");
 //   });
 
 
-router.get('/reviews/:expererience_Id', (req, res, next) => {
-    const { expererience_Id } = req.params
-    Experience.findById(expererience_Id ).populate("reviews")
-        .then((allReviews) => res.json(allReviews))
-        .catch(err => res.json(err));
+router.get('/reviews/:experience_Id', (req, res, next) => {
+        const { experience_Id } = req.params;
+        Experience.findById(experience_Id).populate([
+            {
+              path: 'reviews',
+              model: 'Review', 
+              populate:{
+                path: 'author',
+                model: 'User',
+                select: 'name',
+              }
+            },
+        ])
+        .then((allReviews) => {
+            console.log('All Reviews:', allReviews); 
+            res.json(allReviews);
+        })
+        .catch ((err) => {
+            console.error('Error:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        })
 });
 
 //  Create comment
@@ -88,9 +104,9 @@ router.post('/reviews/:expererience_Id/modify', (req, res, next) => {
     })
         .then(() => {
             Review.find({ experience: expererience_Id })
-            .then(allReviews => res.json(allReviews))
-            .catch(err => res.json(err));
-    })
+                .then(allReviews => res.json(allReviews))
+                .catch(err => res.json(err));
+        })
 
         .catch(err => console.log('This error has been triggered', err))
 });
