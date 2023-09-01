@@ -9,7 +9,7 @@ const Experience = require("../models/Experience.model");
 
     const {location} = req.params
 
-    Experience.find({location: location}).populate("reviews")
+    Experience.find({location: location})
       .then((allExperiences) => { 
         console.log(allExperiences);
         res.json(allExperiences)})
