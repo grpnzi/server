@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Experience = require('./Experience.model');
+const Experience = require('./models/Experience.model');
 
 // we need the dotenv to access to the variables inside the .env file
 require("dotenv").config();
