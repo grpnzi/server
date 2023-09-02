@@ -4,9 +4,12 @@ const reviewSchema = new Schema(
   {
     comment: {
       type: String,
-      required: [true, "comment is required."],
+      required: [true, "Comment is required."],
     },
-    author: { type: Schema.Types.ObjectId, ref: 'User' },
+    author: { 
+      type: Schema.Types.ObjectId, ref: 'User' ,
+      required: true,
+    },
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],  // ponemos brackets ya que es una lista
   },
   {
