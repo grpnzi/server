@@ -4,30 +4,56 @@ const User = require("../models/User.model");
 const Review = require("../models/Review.model");
 const Experience = require("../models/Experience.model");
 
-// router.post('/places/:placeId/like', isLoggedIn, (req, res) => {
-//     const placeId = req.params.placeId;
-//     const userId = req.session.currentUser._id;
-//     Place.findById(placeId)
-//       .then((place) => {
-//         if (!place) {
-//           return res.status(404).send('Place not found');
-//         }
-//         if (place.likes.includes(userId)) {
-//           return Place.updateOne({ _id: placeId }, { $pull: { likes: userId } });
-//         } else {
-//           return Place.updateOne({ _id: placeId }, { $addToSet: { likes: userId } });
-//         }
-//       })
-//       .then(() => {
-//         res.redirect("/places/" + placeId);
-//       })
-//       .catch(error => {
-//         console.error(error);
-//         res.status(500).send('Error processing request');
-//       });
-//   });
 
+router.post('/reviews/like', (req, res) => {
+    const { userId, reviewId } = req.body;
+    let updateQuery;
 
+    Review.findById(reviewId)
+        .then((review) => {
+            if (!review) {
+                return res.status(404).send('Review not found');
+            }
+
+            if (review.likes.includes(userId)) {
+                updateQuery = { $pull: { likes: userId } };
+            } else {
+                updateQuery = { $addToSet: { likes: userId } };
+            }
+
+            Review.updateOne({ _id: reviewId }, updateQuery)
+                .then(() => {
+                    res.status(200).send('Operation like successful');
+                })
+                .catch(error => {
+                    console.error(error);
+                    res.status(500).send('Error updating review');
+                });
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).send('Error processing request');
+        });
+});
+
+//Modify comment
+router.post('/reviews/edit', (req, res, next) => {
+    const { comment, reviewId } = req.body
+
+    Review.findByIdAndUpdate(reviewId, {
+        comment
+    }, { new: true })
+        .then((updatedReview) => {
+            res.status(201).json({ message: 'Comment updated succesfull', updatedReview });
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        });
+
+});
+
+//Get all the reviews
 router.get('/reviews/:experience_Id', (req, res, next) => {
     const { experience_Id } = req.params;
     Experience.findById(experience_Id).populate([
@@ -55,7 +81,6 @@ router.get('/reviews/:experience_Id', (req, res, next) => {
 
 router.post('/reviews/:experience_Id', (req, res, next) => {
     const { comment, userId } = req.body;
-    console.log(comment, userId);
     const { experience_Id } = req.params;
 
     Review.create({
@@ -89,11 +114,11 @@ router.post('/reviews/:experience_id/delete', (req, res, next) => {
                 { $pull: { reviews: reviewId } },
                 { new: true } // This option returns the updated experience document
             )
-            .then(allReviews => res.json(allReviews))
-            .catch(err => {
-                console.error('Error:', err);
-                res.status(500).json({ error: 'Internal Server Error' });
-            });
+                .then(allReviews => res.json(allReviews))
+                .catch(err => {
+                    console.error('Error:', err);
+                    res.status(500).json({ error: 'Internal Server Error' });
+                });
         })
         .catch(err => {
             console.error('Error:', err);
@@ -101,22 +126,6 @@ router.post('/reviews/:experience_id/delete', (req, res, next) => {
         });
 });
 
-//Modify comment
-router.post('/reviews/:expererience_Id/modify', (req, res, next) => {
-    const { comment, experience_id } = req.body
-    const { expererience_Id } = req.params
-
-    Review.findByIdAndUpdate(experience_id, {
-        comment,
-    })
-        .then(() => {
-            Review.find({ experience: expererience_Id })
-                .then(allReviews => res.json(allReviews))
-                .catch(err => res.json(err));
-        })
-
-        .catch(err => console.log('This error has been triggered', err))
-});
 
 
 module.exports = router;
