@@ -11,6 +11,7 @@ const experienceSchema = new Schema({
     required: [true, "Location is required."]
   },
   experienceType: {
+    type: String,
     enum:["Xtreme", "Cultural", "Gastronomic"], 
     required: [true, "Experience type is required"]
   },
