@@ -29,23 +29,23 @@ const Experience = require("../models/Experience.model");
 
 
 router.get('/reviews/:experience_Id', (req, res, next) => {
-        const { experience_Id } = req.params;
-        Experience.findById(experience_Id).populate([
-            {
-              path: 'reviews',
-              model: 'Review', 
-              populate:{
+    const { experience_Id } = req.params;
+    Experience.findById(experience_Id).populate([
+        {
+            path: 'reviews',
+            model: 'Review',
+            populate: {
                 path: 'author',
                 model: 'User',
                 select: 'name',
-              }
-            },
-        ])
+            }
+        },
+    ])
         .then((allReviews) => {
-            console.log('All Reviews:', allReviews); 
+            console.log('All Reviews:', allReviews);
             res.json(allReviews);
         })
-        .catch ((err) => {
+        .catch((err) => {
             console.error('Error:', err);
             res.status(500).json({ error: 'Internal Server Error' });
         })
@@ -53,9 +53,10 @@ router.get('/reviews/:experience_Id', (req, res, next) => {
 
 //  Create comment
 
-router.post('/reviews/:expererience_Id', (req, res, next) => {
-    const { comment, userId } = req.body
-    const { expererience_Id } = req.params
+router.post('/reviews/:experience_Id', (req, res, next) => {
+    const { comment, userId } = req.body;
+    console.log(comment, userId);
+    const { experience_Id } = req.params;
 
     Review.create({
         comment,
@@ -63,31 +64,41 @@ router.post('/reviews/:expererience_Id', (req, res, next) => {
     })
         .then((newReview) => {
             return Experience.findByIdAndUpdate(
-                expererience_Id,
-                { $addToSet: { reviews: newReview._id } }, // addToSet es lo mismo que un push pero limitado a 1 iteracion.
-                { new: true } // This option returns the updated experience document
-            )
+                experience_Id,
+                { $addToSet: { reviews: newReview._id } },
+                { new: true }
+            );
+        })
+        .then((updatedExperience) => {
+            res.status(201).json({ message: 'Review created and experience updated successfully', updatedExperience });
         })
         .catch((error) => {
             console.error(error);
             res.status(500).json({ error: 'Error updating experience with new review.' });
         });
-})
-
+});
 
 //Delete comment
-router.post('/reviews/:expererience_Id/delete', (req, res, next) => {
-    const { reviewId } = req.body
-    const experience_id = req.params;
+router.post('/reviews/:experience_id/delete', (req, res, next) => {
+    const { reviewId } = req.body;
+    const { experience_id } = req.params; // Correctly extract experience_id
     Review.findByIdAndDelete(reviewId)
         .then(() => {
-            Experience.findByIdAndUpdate(experience_id,
+            Experience.findByIdAndUpdate(
+                experience_id,
                 { $pull: { reviews: reviewId } },
                 { new: true } // This option returns the updated experience document
             )
-                .then(allReviews => res.json(allReviews))
+            .then(allReviews => res.json(allReviews))
+            .catch(err => {
+                console.error('Error:', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            });
         })
-        .catch(err => console.log('This error has been triggered', err))
+        .catch(err => {
+            console.error('Error:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        });
 });
 
 //Modify comment
