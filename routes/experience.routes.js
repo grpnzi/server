@@ -2,6 +2,34 @@ const express = require("express");
 const router = express.Router();
 const Experience = require("../models/Experience.model");
 
+  // CREATE EXPERIENCE
+
+router.post('/create', (req, res) => {
+  const {
+    title,
+    location,
+    experienceType,
+    description,
+    duration,
+    price,
+    imageUrl,
+    tags,
+    ratings,
+    reviews
+  } = req.body;
+
+ 
+  const newExperience = {title,location,experienceType,description,duration,price,imageUrl,tags,ratings,reviews};
+
+  Experience.create(newExperience)
+    .then((createdExperience) => {
+      res.status(201).json({ message: 'Experience created successfully', createdExperience });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Error creating experience' });
+    });
+});
 
 
 
@@ -23,4 +51,73 @@ const Experience = require("../models/Experience.model");
       .catch(err => res.json(err));
   });
 
-  module.exports = router;
+
+
+// EDIT EXPERIENCE
+router.post('/experience/edit/:experienceId', (req, res) => {
+  const experienceId = req.params.experienceId;
+  const {
+    title,
+    location,
+    experienceType,
+    description,
+    duration,
+    price,
+    imageURL,
+    tags,
+    ratings,
+    reviews
+  } = req.body;
+
+  const updatedExperience = {
+    title,
+    location,
+    experienceType,
+    description,
+    duration,
+    price,
+    imageURL,
+    tags,
+    ratings,
+    reviews
+  };
+
+
+  Experience.findByIdAndUpdate(experienceId, updatedExperience, { new: true })
+    .then((modifiedExperience) => {
+      res.json(modifiedExperience);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Error updating experience' });
+    });
+});
+
+//DELETE EXPERIENCE
+
+router.post("/experience/delete/:experienceId", (req, res) => {
+  const experienceId = req.params.experienceId;
+
+  Experience.findByIdAndRemove(experienceId)
+    .then((deletedExperience) => {
+      if (deletedExperience) {
+        res.json({ message: "Experience deleted successfully" });
+      } else {
+        res.status(404).json({ error: "Experience not found" });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: "Error deleting experience" });
+    });
+});
+
+module.exports = router;
+
+
+
+
+
+
+
+
