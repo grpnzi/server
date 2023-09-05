@@ -22,6 +22,11 @@ const userSchema = new Schema(
     img: {
       type: String,
       required: [true, 'Image is required.'],
+    },
+    admin: {
+      type:Boolean,
+      require: true,
+      default:false
     }
   },
   {
