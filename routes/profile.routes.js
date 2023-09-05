@@ -1,13 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-
+const { isLoggedUser } = require('./../middleware/guard.middleware.js');
 const User = require("./../models/User.model");
-const { /* isAuthenticated */ } = require("../middleware/jwt.middleware");
 
 // EDIT USER
-router.post("/profile/edit/:userId", /* isAuthenticated */(req, res) => {
+router.post("/profile/edit/:userId", isLoggedUser, (req, res) => {
   const userId = req.params.userId;
   const { email, img, name } = req.body;
   User.findByIdAndUpdate(userId, { email, img, name }, { new: true })
@@ -30,12 +28,12 @@ router.post("/profile/edit/:userId", /* isAuthenticated */(req, res) => {
 });
 
 // DELETE USER
-router.post("/profile/delete/:userId", /* isAuthenticated */(req, res) => {
+router.post("/profile/delete/:userId", isLoggedUser, (req, res) => {
   const userId = req.params.userId;
-  const { email, password, name } = req.body;
-  User.findByIdAndRemove(userId, { email, password, name })
-    .then((deletedUser) => {
-      res.json(deletedUser);
+
+  User.findByIdAndRemove(userId)
+    .then(() => {
+      Reviews.findByIdAndRemove()
     })
     .catch((error) => {
       console.error(error);
