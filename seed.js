@@ -6,17 +6,17 @@ require("dotenv").config();
 
 const MONGO_URI ="mongodb+srv://Project3:Project3@cluster0.nhp3iwl.mongodb.net/Project3"
 
-const newExperience ={
-    title: 'Amazing Adventure',
-    location: 'Mountain Range',
-    experienceType: 'Xtreme',
-    description: 'Embark on an amazing adventure in the mountain range...',
-    duration: '3 days',
-    price: 199.99,
-    imageUrl: 'https://example.com/image.jpg',
-    tags: ['Adventure', 'Outdoor'],
-    ratings:"64eefe705cce590d2740e3d8",
-    reviews:'64eefe705cce590d2740e3d8'
+const newExperience = {
+  title: "Husky Sledding and Northern Lights Expedition",
+  location: 'FIN',
+  experienceType: 'Xtreme',
+  description: `Journey through the Arctic wilderness under the magical Northern Lights. Drive your own team of huskies through the snowy landscapes, guided only by the ethereal glow of the Aurora Borealis. This unique adventure combines the thrill of dog sledding with the wonder of the Northern Lights`,
+  duration: '1 day',
+  price: 450.00,
+  imageUrl: 'https://www.visittromso.no/sites/cb_tromso/files/styles/article_slide_large/public/Banner%20husky.jpg?h=d2263936&itok=XhBkuvXU',
+  tags: ['Husky Sledding', 'Northern Lights', 'Arctic Adventure'],
+  ratings: [],
+  reviews: []
   };
 
 mongoose
