@@ -63,7 +63,7 @@ router.get('/reviews/:experience_Id', (req, res, next) => {
             populate: {
                 path: 'author',
                 model: 'User',
-                select: 'name',
+                select: 'name img',
             }
         },
     ])

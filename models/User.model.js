@@ -17,7 +17,17 @@ const userSchema = new Schema(
     name: {
       type: String,
       required: [true, "Name is required."],
+      unique: true,
     },
+    img: {
+      type: String,
+      required: [true, 'Image is required.'],
+    },
+    admin: {
+      type:Boolean,
+      require: true,
+      default:false
+    }
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
