@@ -9,7 +9,7 @@ const { /* isAuthenticated */ } = require("../middleware/jwt.middleware");
 router.post("/profile/edit/:userId", /* isAuthenticated */ (req, res) => {
   const userId = req.params.userId;
   const { email, password, name } = req.body;
-  User.findByIdAndUpdate(userId, { email, password, name })
+  User.findByIdAndUpdate(userId, { email, password, name }, {new: true})
     .then((modifiedUser) => {
       res.json(modifiedUser);
     })
