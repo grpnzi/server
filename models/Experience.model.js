@@ -32,7 +32,7 @@ const experienceSchema = new Schema({
     required: [true, "Image is required."] 
   },
   tags: [{ type: String }],
-  ratings: [{ type: Schema.Types.ObjectId, ref: 'Review'}],
+  ratings: [{ type: Schema.Types.ObjectId, ref: 'Rating'}],
   reviews: [{ type: Schema.Types.ObjectId, ref: 'Review'}],
 
   },
