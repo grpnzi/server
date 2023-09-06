@@ -23,6 +23,13 @@ router.post('/:experienceId/create', (req, res) => {
   const { userId, ratingValue } = req.body;
   const { experienceId } = req.params;
 
+  const existingRating = Rating.findOne({ author: userId, experience: experienceId });
+
+  if (existingRating) {
+    // You can return an error or handle this case as needed
+    return res.status(400).send({ error: 'User has already rated this experience' });
+  }
+
   Rating.create({
     rating: ratingValue,
     author: userId,
@@ -35,7 +42,7 @@ router.post('/:experienceId/create', (req, res) => {
       );
     })
     .then((updatedExperience) => {
-      res.status(201).json({ message: 'Review created and experience updated successfully', updatedExperience });
+      res.status(201).json({ message: 'Rating created and experience updated successfully', updatedExperience });
     })
     .catch((error) => {
       console.error(error);
