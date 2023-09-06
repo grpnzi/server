@@ -2,6 +2,18 @@ const express = require("express");
 const router = express.Router();
 const Experience = require("../models/Experience.model");
 
+//EXPERIENCES
+
+router.get('/experiences', (req, res) => {
+
+  Experience.find()
+    .then((allExperiences) => { 
+      console.log(allExperiences);
+      res.json(allExperiences)})
+    .catch(err => res.json(err));
+});
+
+
   // CREATE EXPERIENCE
 
 router.post('/create', (req, res) => {
