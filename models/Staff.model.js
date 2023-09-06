@@ -9,7 +9,7 @@ const staffSchema = new Schema(
     },
     occupation: {
         type: String,
-        required: [true, "Name is required."],
+        required: [true, "Ocupation is required."],
       },
     
     img: {

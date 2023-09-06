@@ -13,11 +13,12 @@ router.get('/staff', (req, res) => {
         allStaff.sort(() => Math.random() - 0.5);
   
         // Get the first 3 elements (random)
-        const randomStaff = allStaff.slice(0, 3);
+        const randomStaff = allStaff.slice(0, 2);
   
         console.log(randomStaff);
         res.json(randomStaff); // Send the response inside this .then() block
       })
       .catch(err => res.json(err));
   });
-  
+
+module.exports = router;
