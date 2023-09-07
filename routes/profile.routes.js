@@ -28,12 +28,12 @@ router.post("/profile/edit/:userId", isLoggedUser, (req, res) => {
 });
 
 // DELETE USER
-router.post("/profile/delete/:userId", isLoggedUser, (req, res) => {
-  const userId = req.params.userId;
+router.post("/profile/delete/:userId", (req, res) => {
+  const {userId} = req.params;
 
   User.findByIdAndRemove(userId)
-    .then(() => {
-      Reviews.findByIdAndRemove()
+    .then((user) => {
+      res.status(201).json({ message: 'Delete user successfully', user });
     })
     .catch((error) => {
       console.error(error);
