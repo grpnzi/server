@@ -23,31 +23,45 @@ router.post('/:experienceId/create', (req, res) => {
   const { userId, ratingValue } = req.body;
   const { experienceId } = req.params;
 
-  const existingRating = Rating.findOne({ author: userId, experience: experienceId });
+  Experience.findOne({ _id: experienceId }).populate('ratings')
+    .then((existingExperience) => {
+      if (!existingExperience) {
+        return res.status(404).json({ error: 'Experience not found' });
+      }
+      const ratings = existingExperience.ratings;
 
-  if (existingRating) {
-    // You can return an error or handle this case as needed
-    return res.status(400).send({ error: 'User has already rated this experience' });
-  }
+      for (const e of ratings) {
+        const authorString = e.author.toString();
 
-  Rating.create({
-    rating: ratingValue,
-    author: userId,
-  })
-    .then((newRating) => {
-      return Experience.findByIdAndUpdate(
-        experienceId,
-        { $addToSet: { ratings: newRating._id } },
-        { new: true }
-      );
-    })
-    .then((updatedExperience) => {
-      res.status(201).json({ message: 'Rating created and experience updated successfully', updatedExperience });
+        if (authorString === userId) {
+          return res.status(400).json({ error: 'You have already rated this experience' });
+        }
+      }
+
+      Rating.create({
+        rating: ratingValue,
+        author: userId,
+      })
+        .then((newRating) => {
+          return Experience.findByIdAndUpdate(
+            experienceId,
+            { $addToSet: { ratings: newRating._id } },
+            { new: true }
+          );
+        })
+        .then((updatedExperience) => {
+          res.status(201).json({ message: 'Rating created and experience updated successfully', updatedExperience });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).json({ error: 'Error creating the rating.' });
+        });
     })
     .catch((error) => {
       console.error(error);
       res.status(500).json({ error: 'Error creating the rating.' });
     });
+
 });
 
 module.exports = router;
